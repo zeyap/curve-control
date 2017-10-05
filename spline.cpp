@@ -67,29 +67,30 @@ void Spline::initInterpolationParameters(std::vector<QPoint> &points){
     curveLen=new float[curveSectionNum];
     totalCurveLen=0;
     for(int i=0;i<curveSectionNum;i++){
-        curveLen[i]=calculateLen(i);
+        curveLen[i]=calculateLen(i,0,1);
         totalCurveLen+=curveLen[i];
     }
+
     totalPointCount=grain*curveSectionNum;
     avgPointsDist=totalCurveLen/(totalPointCount-1);
 
 }
 
-float Spline::calculateLen(int curvei){
-    return simpsons(curvei,0,1);
+float Spline::calculateLen(int curvei, float startu, float endu){
+    float res=simpsons(curvei,startu,endu);
+    return res;
 }
 
 float Spline::simpsons(int curvei, float startu, float endu){
     //将0~u展开成n个区间
-
     int n=10;
     const float h=(endu-startu)/n;
-    float ans;
+    float ans=0;
     for (int i=1;i<=n-1;i++){
         if(i%2){
             ans += 4*f(curvei,startu+1.0f*i/n*(endu-startu));
         }else{
-            ans+=2*f(curvei,startu+1.0f*i/n*(endu-startu));
+            ans += 2*f(curvei,startu+1.0f*i/n*(endu-startu));
         }
     }
     ans+=f(curvei,startu)+f(curvei,endu);
@@ -101,10 +102,14 @@ float Spline::f(int curvei,float u){
     return sqrt(((((A[curvei]*u+B[curvei])*u)+C[curvei])*u+D[curvei])*u+E[curvei]);
 }
 
-float Spline::calculateU(int curvei, float len){
+float Spline::calculateU(int curvei, float len, float ul, float uh){
     //calculate u in i
-
-    return 0;
+    float midlen = calculateLen(curvei,0,(ul+uh)/2);
+        if(midlen-len>-1.0f && midlen-len<1.0f){
+            return (ul+uh)/2;
+        }
+        else if(midlen > len)return calculateU(curvei,len,ul,(ul+uh)/2);
+        else if(midlen < len)return calculateU(curvei,len,(ul+uh)/2,uh);
 
 }
 
@@ -157,9 +162,10 @@ void Spline::addInterpolativePoints(std::vector<QPoint> &points){
 
         for(float len=0;len<totalCurveLen;len+=avgPointsDist){
             int curvei=calculateCurveSectioni(len);
-            float u=calculateU(curvei,len);
+            float u=calculateU(curvei,len,0,1);
             QPoint newintp=interpolateOnCurve(curvei,u);
             intPoints.push_back(newintp);
+            printf("%f %f, ",newintp.x(),newintp.y());
         }
         delete Ax,Ay,Bx,By,Cx,Cy,Dx,Dy;
 
@@ -183,7 +189,7 @@ void Spline::addEndingPoints(std::vector<QPoint> &points){
     }
 }
 
-QPoint Spline::interpolateOnCurves(int curvei, float u){
+QPoint Spline::interpolateOnCurve(int curvei, float u){
 
     QPoint* newp=new QPoint(CardinalMatrix(curvei,"x",u),CardinalMatrix(curvei,"y",u));
     return newp[0];

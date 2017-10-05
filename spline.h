@@ -25,11 +25,11 @@ private:
     //static Spline* newSpline;
     float CardinalMatrix(int i, std::string coordinate, float u);
     void addEndingPoints(std::vector<QPoint> &points);
-    QPoint interpolateOnCurve(int starti, float u);
+    QPoint interpolateOnCurve(int curvei, float u);
     void initInterpolationParameters(std::vector<QPoint> &points);
     void calculateTangentValues();
-    float calculateLen(int curvei);
-    float calculateU(int i, float len);
+    float calculateLen(int curvei, float startu, float endu);
+    float calculateU(int i, float len, float ul, float uh);
     int calculateCurveSectioni(float len);
     float f(int curvei,float u);
     float simpsons(int curvei,float startu, float endu);

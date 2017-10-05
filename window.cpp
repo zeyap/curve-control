@@ -85,8 +85,6 @@ Window::Window()
     setLayout(mainLayout);
 
     setWindowTitle(tr("E1"));
-
-    printf("windowInitialized");
 }
 
 void Window::tensionChanged(int value){
