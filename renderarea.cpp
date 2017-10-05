@@ -58,7 +58,6 @@ void RenderArea::clear(){
     isAvatarShown=false;
     pointsDrawn=false;
     pointsCoord.clear();
-    splineControl->totalPointCount=0;
     splineControl->clearPrevIntPoints();
     splineControl->isEndingPointsAdded=false;
     update();
@@ -68,7 +67,6 @@ void RenderArea::play(){
 
     isAvatarShown=true;
     avatar.load("D:\\Study\\Computer Animation\\Experiment\\E1\\image\\motorcycle.png");
-    splineControl->totalPointCount=splineControl->grain*pointsCoord.size();
     setSpeed(splineControl->speed);
 
     update();

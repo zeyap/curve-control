@@ -18,7 +18,6 @@ public:
     std::vector<float> pTangent;
     bool isEndingPointsAdded;
     int grain;
-    int totalPointCount;
     float speed;
 
 private:
@@ -29,9 +28,18 @@ private:
     void interpolateBetween2Points(int starti);
     void initInterpolationParameters(std::vector<QPoint> &points);
     void calculateTangentValues();
+    float calculateLen(int curvei);
+    float calculateU(int curvei, float len);
+    float f(int curvei,float u);
+    float simpsons(int curvei,float startu, float endu);
     float t;//tension
     float m[16];
     float *Ax, *Bx,*Cx,*Dx,*Ay,*By,*Cy,*Dy;
+    float *A, *B, *C, *D, *E;
+    float *curveLen;
+    float totalCurveLen;
+    int totalPointCount;
+    float avgPointsDist;
 };
 
 #endif // SPLINE_H
