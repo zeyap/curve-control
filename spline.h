@@ -18,16 +18,20 @@ public:
     std::vector<float> pTangent;
     bool isEndingPointsAdded;
     int grain;
+    int totalPointCount;
     float speed;
 
 private:
 
     //static Spline* newSpline;
-    float CardinalMatrix(float a, float b, float c, float d, float u);
+    float CardinalMatrix(int i, std::string coordinate, float u);
     void addEndingPoints(std::vector<QPoint> &points);
-    void interpolateBetween2Points(std::vector<QPoint> &points, int starti, int endi);
+    void interpolateBetween2Points(int starti);
+    void initInterpolationParameters(std::vector<QPoint> &points);
+    void calculateTangentValues();
     float t;//tension
     float m[16];
+    float *Ax, *Bx,*Cx,*Dx,*Ay,*By,*Cy,*Dy;
 };
 
 #endif // SPLINE_H
