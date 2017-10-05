@@ -63,7 +63,7 @@ void Spline::initInterpolationParameters(std::vector<QPoint> &points){
         }
     }
 
-    int curveSectionNum=points.size()-3;
+    curveSectionNum=points.size()-3;
     curveLen=new float[curveSectionNum];
     totalCurveLen=0;
     for(int i=0;i<curveSectionNum;i++){
@@ -102,8 +102,23 @@ float Spline::f(int curvei,float u){
 }
 
 float Spline::calculateU(int curvei, float len){
+    //calculate u in i
+
     return 0;
 
+}
+
+int Spline::calculateCurveSectioni(float len){
+    //calculate i
+    int curvei=0;
+    for(int i=0;i<curveSectionNum;i++){
+        if(len<curveLen[i]){
+            curvei=i;
+            break;
+        }
+    }
+
+    return curvei;
 }
 
 void Spline::calculateTangentValues(){
@@ -140,11 +155,13 @@ void Spline::addInterpolativePoints(std::vector<QPoint> &points){
         addEndingPoints(points);
         initInterpolationParameters(points);
 
-        for(int i=0;i<points.size();i+=1){
-            if(i+3<points.size()){
-                interpolateBetween2Points(i+1);
-            }
+        for(float len=0;len<totalCurveLen;len+=avgPointsDist){
+            int curvei=calculateCurveSectioni(len);
+            float u=calculateU(curvei,len);
+            QPoint newintp=interpolateOnCurve(curvei,u);
+            intPoints.push_back(newintp);
         }
+        delete Ax,Ay,Bx,By,Cx,Cy,Dx,Dy;
 
         calculateTangentValues();
     }
@@ -166,18 +183,11 @@ void Spline::addEndingPoints(std::vector<QPoint> &points){
     }
 }
 
-void Spline::interpolateBetween2Points(int starti){
-    float ustep;
-    float u=0;
-    int curvei=starti-1;
-    float currentLen;
-    for(int count=0;(currentLen=count*avgPointsDist)<curveLen(curvei);count++){
-        ustep=calculateU(curvei,avgLen*count);
-        u+=ustep;
-        QPoint* newp=new QPoint(CardinalMatrix(curvei,"x",u),CardinalMatrix(curvei,"y",u));
-        intPoints.push_back(newp[0]);
-    }
-    delete Ax,Ay,Bx,By,Cx,Cy,Dx,Dy;
+QPoint Spline::interpolateOnCurves(int curvei, float u){
+
+    QPoint* newp=new QPoint(CardinalMatrix(curvei,"x",u),CardinalMatrix(curvei,"y",u));
+    return newp[0];
+
 }
 
 void Spline::updateParameters(float tension,int intplPointCount){

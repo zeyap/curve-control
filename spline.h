@@ -25,11 +25,12 @@ private:
     //static Spline* newSpline;
     float CardinalMatrix(int i, std::string coordinate, float u);
     void addEndingPoints(std::vector<QPoint> &points);
-    void interpolateBetween2Points(int starti);
+    QPoint interpolateOnCurve(int starti, float u);
     void initInterpolationParameters(std::vector<QPoint> &points);
     void calculateTangentValues();
     float calculateLen(int curvei);
-    float calculateU(int curvei, float len);
+    float calculateU(int i, float len);
+    int calculateCurveSectioni(float len);
     float f(int curvei,float u);
     float simpsons(int curvei,float startu, float endu);
     float t;//tension
@@ -40,6 +41,7 @@ private:
     float totalCurveLen;
     int totalPointCount;
     float avgPointsDist;
+    int curveSectionNum;
 };
 
 #endif // SPLINE_H
