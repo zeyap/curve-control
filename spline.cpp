@@ -105,12 +105,22 @@ float Spline::f(int curvei,float u){
 
 float Spline::calculateU(int curvei, float len, float ul, float uh){
     //calculate u in i
-    float midlen = calculateLen(curvei,0,(ul+uh)/2);
-        if(midlen-len>-1.0f && midlen-len<1.0f){
-            return (ul+uh)/2;
-        }
-        else if(midlen > len)return calculateU(curvei,len,ul,(ul+uh)/2);
-        else if(midlen < len)return calculateU(curvei,len,(ul+uh)/2,uh);
+    float tempul,tempuh;
+    tempul=ul;
+    tempuh=uh;
+    float midlen;
+    while(true){
+         midlen= calculateLen(curvei,0,(tempul+tempuh)/2);
+            if(midlen-len>-1.0f && midlen-len<1.0f){
+                break;
+            }
+            else if(midlen > len){
+                tempuh=(tempul+tempuh)/2;
+            }else{//midlen < len
+                tempul=(tempul+tempuh)/2;
+            }
+    }
+    return (tempul+tempuh)/2;
 }
 
 int Spline::calculateCurveSectioni(float len){
