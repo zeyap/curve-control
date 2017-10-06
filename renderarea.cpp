@@ -66,7 +66,7 @@ void RenderArea::clear(){
 void RenderArea::play(){
 
     isAvatarShown=true;
-    avatar.load("D:\\Study\\Computer Animation\\Experiment\\E1\\image\\motorcycle.png");
+    avatar.load(":\\image\\motorcycle.png");
     setSpeed(splineControl->speed);
 
     update();
