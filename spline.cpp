@@ -66,7 +66,7 @@ void Spline::initInterpolationParameters(std::vector<QPoint> &points){
     }
 
     curveSectionNum=points.size()-3;
-    curveLen=new float[curveSectionNum];
+    //curveLen=new float[curveSectionNum];
     totalCurveLen=0;
     for(int i=0;i<curveSectionNum;i++){
         curveLen[i]=calculateLen(i,0,1);
@@ -95,7 +95,7 @@ float Spline::simpsons(int curvei, float startu, float endu){
         }
     }
     ans+=f(curvei,startu)+f(curvei,endu);
-    ans+=h/3;
+    ans*=h/3;
     return ans;
 }
 
@@ -104,17 +104,22 @@ float Spline::f(int curvei,float u){
 }
 
 float Spline::calculateU(int curvei, float len, float ul, float uh){
-    //calculate u in i
+    float lenOnCurvei=len;
+    for(int i=0;i<curvei;i++){
+        lenOnCurvei-=curveLen[i];
+    }
+
+    if(lenOnCurvei<1.0f)return 0;
     float tempul,tempuh;
     tempul=ul;
     tempuh=uh;
     float midlen;
     while(true){
          midlen= calculateLen(curvei,0,(tempul+tempuh)/2);
-            if(midlen-len>-1.0f && midlen-len<1.0f){
+            if(midlen-lenOnCurvei>-1.0f && midlen-lenOnCurvei<1.0f){
                 break;
             }
-            else if(midlen > len){
+            else if(midlen > lenOnCurvei){
                 tempuh=(tempul+tempuh)/2;
             }else{//midlen < len
                 tempul=(tempul+tempuh)/2;
@@ -126,8 +131,10 @@ float Spline::calculateU(int curvei, float len, float ul, float uh){
 int Spline::calculateCurveSectioni(float len){
     //calculate i
     int curvei=0;
+    float additiveLenSum=0;
     for(int i=0;i<curveSectionNum;i++){
-        if(len<curveLen[i]){
+        additiveLenSum+=curveLen[i];
+        if(len<additiveLenSum){
             curvei=i;
             break;
         }
@@ -175,7 +182,7 @@ void Spline::addInterpolativePoints(std::vector<QPoint> &points){
             float u=calculateU(curvei,len,0,1);
             QPoint newintp=interpolateOnCurve(curvei,u);
             intPoints.push_back(newintp);
-            printf("%f %f, ",newintp.x(),newintp.y());
+            //printf("%f %f, ",newintp.x(),newintp.y());
         }
         delete A,B,C,D,E;
         delete Ax,Ay,Bx,By,Cx,Cy,Dx,Dy;
