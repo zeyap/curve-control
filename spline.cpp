@@ -54,11 +54,13 @@ void Spline::initInterpolationParameters(std::vector<QPoint> &points){
             Cy[i]=m[8]*y[0]+m[9]*y[1]+m[10]*y[2]+m[11]*y[3];
             Dy[i]=m[12]*y[0]+m[13]*y[1]+m[14]*y[2]+m[15]*y[3];
 
+
             A[i]=9*(Ax[i]*Ax[i]+Ay[i]*Ay[i]);
             B[i]=12*(Ax[i]*Bx[i]+Ay[i]*By[i]);
-            C[i]=6*(Ax[i]*Cx[i]+Ay[i]*By[i])+4*(Bx[i]*Bx[i]+By[i]*By[i]);
+            C[i]=6*(Ax[i]*Cx[i]+Ay[i]*Cy[i])+4*(Bx[i]*Bx[i]+By[i]*By[i]);
             D[i]=4*(Bx[i]*Cx[i]+By[i]*Cy[i]);
             E[i]=Cx[i]*Cx[i]+Cy[i]*Cy[i];
+
             delete x,y;
         }
     }
@@ -77,15 +79,14 @@ void Spline::initInterpolationParameters(std::vector<QPoint> &points){
 }
 
 float Spline::calculateLen(int curvei, float startu, float endu){
-    float res=simpsons(curvei,startu,endu);
-    return res;
+    return simpsons(curvei,startu,endu);
 }
 
 float Spline::simpsons(int curvei, float startu, float endu){
     //将0~u展开成n个区间
-    int n=10;
+    int n=6;
     const float h=(endu-startu)/n;
-    float ans=0;
+    double ans=0;
     for (int i=1;i<=n-1;i++){
         if(i%2){
             ans += 4*f(curvei,startu+1.0f*i/n*(endu-startu));
@@ -110,7 +111,6 @@ float Spline::calculateU(int curvei, float len, float ul, float uh){
         }
         else if(midlen > len)return calculateU(curvei,len,ul,(ul+uh)/2);
         else if(midlen < len)return calculateU(curvei,len,(ul+uh)/2,uh);
-
 }
 
 int Spline::calculateCurveSectioni(float len){
@@ -167,6 +167,7 @@ void Spline::addInterpolativePoints(std::vector<QPoint> &points){
             intPoints.push_back(newintp);
             printf("%f %f, ",newintp.x(),newintp.y());
         }
+        delete A,B,C,D,E;
         delete Ax,Ay,Bx,By,Cx,Cy,Dx,Dy;
 
         calculateTangentValues();
