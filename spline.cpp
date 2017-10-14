@@ -68,6 +68,7 @@ void Spline::initInterpolationParameters(std::vector<QPoint> &points){
     curveSectionNum=points.size()-3;
     //curveLen=new float[curveSectionNum];
     totalCurveLen=0;
+    curveLen=new float[curveSectionNum];
     for(int i=0;i<curveSectionNum;i++){
         curveLen[i]=calculateLen(i,0,1);
         totalCurveLen+=curveLen[i];
@@ -110,22 +111,19 @@ float Spline::calculateU(int curvei, float len, float ul, float uh){
     }
 
     if(lenOnCurvei<1.0f)return 0;
-    float tempul,tempuh;
-    tempul=ul;
-    tempuh=uh;
     float midlen;
     while(true){
-         midlen= calculateLen(curvei,0,(tempul+tempuh)/2);
+         midlen= calculateLen(curvei,0,(ul+uh)/2);
             if(midlen-lenOnCurvei>-1.0f && midlen-lenOnCurvei<1.0f){
                 break;
             }
             else if(midlen > lenOnCurvei){
-                tempuh=(tempul+tempuh)/2;
+                uh=(ul+uh)/2;
             }else{//midlen < len
-                tempul=(tempul+tempuh)/2;
+                ul=(ul+uh)/2;
             }
     }
-    return (tempul+tempuh)/2;
+    return (ul+uh)/2;
 }
 
 int Spline::calculateCurveSectioni(float len){

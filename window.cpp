@@ -8,7 +8,7 @@ const int IdRole = Qt::UserRole;
 
 Window::Window()
 {
-    renderArea = new RenderArea;//RenderArea widget renders the currently active shape
+    renderArea = new RenderArea;
 
     //tension spinbox
     tensionSpinBox = new QSpinBox;

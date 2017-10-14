@@ -32,22 +32,21 @@ private slots:
 private:
     RenderArea *renderArea;
 
-    //tension spinbox
     QLabel *tensionLabel;
     QSpinBox *tensionSpinBox;
-    //grain spinbox
+
     QLabel *grainLabel;
     QSpinBox *grainSpinBox;
-    //speed slider
+
     QLabel *speedLabel;
     QSlider *speedSlider;
-    //showPoints button
+
     QPushButton *showPointsButton;
-    //drawLine button
+
     QPushButton *drawLineButton;
-    //clear button
+
     QPushButton *clearButton;
-    //play button
+
     QPushButton *playButton;
 
 };

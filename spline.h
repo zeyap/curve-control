@@ -37,7 +37,7 @@ private:
     float m[16];
     float *Ax, *Bx,*Cx,*Dx,*Ay,*By,*Cy,*Dy;
     float *A, *B, *C, *D, *E;
-    float curveLen[10];
+    float *curveLen;
     float totalCurveLen;
     int totalPointCount;
     float avgPointsDist;

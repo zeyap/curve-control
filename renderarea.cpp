@@ -74,6 +74,7 @@ void RenderArea::play(){
 }
 
 void RenderArea::mousePressEvent(QMouseEvent *event){
+
     if(pointsDrawn==true){
         clear();
     }
@@ -85,8 +86,6 @@ void RenderArea::mousePressEvent(QMouseEvent *event){
 }
 
 void RenderArea::paintEvent(QPaintEvent *){
-
-    //QRect rect(10, 10, 455, 300);//fit window
 
     QPainter painter(this);
     QColor cPoint=QColor(0,0,0);
@@ -119,13 +118,14 @@ void RenderArea::paintEvent(QPaintEvent *){
 
     if(isAvatarShown){
         if(movingStep<splineControl->intPoints.size()){
+
             QTransform trans;
             QPoint rotCenter=splineControl->intPoints[movingStep];
             trans.translate(rotCenter.x(),rotCenter.y());
             trans.rotate(splineControl->pTangent[movingStep]);
             trans.translate(-rotCenter.x(),-rotCenter.y());
-
             painter.setWorldTransform(trans);
+
             painter.drawPixmap(splineControl->intPoints[movingStep].x(),splineControl->intPoints[movingStep].y(),avatar);
             movingStep++;
         }else{
